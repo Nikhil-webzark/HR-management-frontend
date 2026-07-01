@@ -23,7 +23,9 @@ const EmployeeDashboard = () => {
       await refreshUser();
       toast.success("Status updated successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update status");
+      const errorMsg = error.response?.data?.message || error.message || "Failed to update status";
+      console.error("Update status error:", errorMsg, error);
+      toast.error(errorMsg);
     } finally {
       setUpdatingStatus(false);
     }
@@ -40,7 +42,9 @@ const EmployeeDashboard = () => {
           : "You are now temporarily unavailable"
       );
     } catch (error) {
-      toast.error("Failed to update availability");
+      const errorMsg = error.response?.data?.message || error.message || "Failed to update availability";
+      console.error("Toggle availability error:", errorMsg, error);
+      toast.error(errorMsg);
     } finally {
       setToggling(false);
     }

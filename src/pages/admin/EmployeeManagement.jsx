@@ -75,8 +75,10 @@ const EmployeeManagement = () => {
       if (activeFilter !== "") params.isActive = activeFilter;
       const response = await getAllEmployeesAPI(params);
       setEmployees(response.data.data);
-    } catch {
-      toast.error("Failed to fetch employees");
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || "Failed to fetch employees";
+      console.error("Fetch employees error:", errorMsg, error);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -147,8 +149,10 @@ const EmployeeManagement = () => {
       await toggleAccountStatusAPI(emp._id);
       toast.success(emp.isActive ? "Account deactivated" : "Account activated");
       fetchEmployees();
-    } catch {
-      toast.error("Failed to update account status");
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || "Failed to toggle account status";
+      console.error("Toggle status error:", errorMsg, error);
+      toast.error(errorMsg);
     }
   };
 
@@ -164,8 +168,10 @@ const EmployeeManagement = () => {
       await resetPasswordAPI(selectedEmployee._id, data);
       toast.success("Password reset successfully");
       setResetModal(false);
-    } catch {
-      toast.error("Failed to reset password");
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || "Failed to reset password";
+      console.error("Reset password error:", errorMsg, error);
+      toast.error(errorMsg);
     }
   };
 
@@ -250,7 +256,7 @@ const EmployeeManagement = () => {
                       <tr key={emp._id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-semibold shrink-0">
                               {emp.fullName?.charAt(0).toUpperCase()}
                             </div>
                             <div>

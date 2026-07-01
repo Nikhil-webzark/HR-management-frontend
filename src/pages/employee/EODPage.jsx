@@ -30,7 +30,9 @@ const EODPage = () => {
       const response = await getEODTimelineAPI();
       setTimeline(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch EOD timeline");
+      const errorMsg = error.response?.data?.message || error.message || "Failed to fetch EOD timeline";
+      console.error("Fetch EOD timeline error:", errorMsg, error);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -52,7 +54,9 @@ const EODPage = () => {
       reset();
       fetchTimeline();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to submit EOD");
+      const errorMsg = error.response?.data?.message || error.message || "Failed to submit EOD";
+      console.error("Submit EOD error:", errorMsg, error);
+      toast.error(errorMsg);
     }
   };
 

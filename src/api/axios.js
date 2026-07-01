@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://hr-management-backend-3uuw.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_URL || "https://hr-management-backend-3uuw.onrender.com/api",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -12,10 +12,17 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const isAuthMe = error.config?.url?.includes("/auth/me");
-    const is401 = error.response?.status === 401;
+    const status = error.response?.status;
 
-    // Only redirect on 401 if it's NOT the /auth/me check
-    if (is401 && !isAuthMe) {
+    // Log the error for debugging
+    console.error(`API Error [${status}]:`, {
+      url: error.config?.url,
+      method: error.config?.method,
+      data: error.response?.data,
+    });
+
+    // Redirect to login only on 401 (not /auth/me check)
+    if (status === 401 && !isAuthMe) {
       window.location.href = "/login";
     }
 

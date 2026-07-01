@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAdminDashboardStatsAPI } from "../../api/status.api.js";
 import { Users, UserCheck, UserX, Clock, FileText, AlertCircle } from "lucide-react";
+import { Toaster, toast } from "sonner";
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
   <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -19,14 +20,19 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setError(null);
         const response = await getAdminDashboardStatsAPI();
         setStats(response.data.data);
       } catch (error) {
-        console.error("Failed to fetch dashboard stats");
+        const errorMsg = error.response?.data?.message || error.message || "Failed to fetch dashboard stats";
+        console.error("Fetch dashboard stats error:", errorMsg, error);
+        setError(errorMsg);
+        toast.error(errorMsg);
       } finally {
         setLoading(false);
       }
@@ -38,6 +44,21 @@ const AdminDashboard = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-500 text-sm mt-1">Overview of today's team activity</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-800 font-medium">Error loading dashboard</p>
+          <p className="text-red-700 text-sm mt-1">{error}</p>
+        </div>
       </div>
     );
   }

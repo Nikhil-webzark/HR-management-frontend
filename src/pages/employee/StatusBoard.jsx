@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllStatusAPI } from "../../api/status.api.js";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const statusConfig = {
   available: { label: "Available", color: "bg-green-100 text-green-700" },
@@ -11,13 +12,21 @@ const statusConfig = {
 const StatusBoard = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchStatus = async () => {
     try {
+      setError(null);
       const response = await getAllStatusAPI();
       setEmployees(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch status board");
+      const errorMsg = error.response?.data?.message || error.message || "Failed to fetch status board";
+      console.error("Fetch status error:", errorMsg, error);
+      setError(errorMsg);
+      // Only show toast on first load, not on refresh
+      if (loading) {
+        toast.error(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -34,6 +43,21 @@ const StatusBoard = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Company Status Board</h1>
+          <p className="text-gray-500 text-sm mt-1">Live availability of all team members</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-800 font-medium">Error loading status board</p>
+          <p className="text-red-700 text-sm mt-1">{error}</p>
+        </div>
       </div>
     );
   }
