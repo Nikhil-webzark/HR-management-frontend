@@ -38,6 +38,10 @@ const AdminDashboard = () => {
       }
     };
     fetchStats();
+    const intervalId = setInterval(fetchStats, 5000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loading) {
