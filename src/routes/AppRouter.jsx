@@ -13,10 +13,7 @@ import Unauthorized from "../pages/Unauthorized.jsx";
 
 const router = createBrowserRouter([
   // Root redirect
-  {
-    path: "/",
-    element: <Navigate to="/login" replace />,
-  },
+  
 
   // Public routes
   {
@@ -54,6 +51,7 @@ const router = createBrowserRouter([
   },
 
   { path: "/unauthorized", element: <Unauthorized /> },
+  { path: "/", element: <PublicRoute /> },
   { path: "*", element: <NotFound /> },
 ]);
 
