@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { ProtectedRoute, PublicRoute } from "./Guards.jsx";
 import LoginPage from "../pages/auth/LoginPage.jsx";
 import EmployeeDashboard from "../pages/employee/EmployeeDashboard.jsx";
@@ -12,6 +12,12 @@ import NotFound from "../pages/NotFound.jsx";
 import Unauthorized from "../pages/Unauthorized.jsx";
 
 const router = createBrowserRouter([
+  // Root redirect
+  {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+
   // Public routes
   {
     element: <PublicRoute />,
@@ -48,7 +54,6 @@ const router = createBrowserRouter([
   },
 
   { path: "/unauthorized", element: <Unauthorized /> },
-  { path: "/", element: <PublicRoute /> },
   { path: "*", element: <NotFound /> },
 ]);
 
